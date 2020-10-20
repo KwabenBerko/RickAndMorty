@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RickAndMorty</string>
+    <string name="title_show_characters">Show Characters</string>
+</resources>
