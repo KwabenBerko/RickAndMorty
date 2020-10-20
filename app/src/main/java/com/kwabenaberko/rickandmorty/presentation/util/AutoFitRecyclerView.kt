@@ -1,4 +1,4 @@
-package com.kwabenaberko.rickandmorty
+package com.kwabenaberko.rickandmorty.presentation.util
 
 import android.content.Context
 import android.content.res.TypedArray

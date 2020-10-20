@@ -1,7 +1,5 @@
 package com.kwabenaberko.rickandmorty.data.repository
 
-import android.util.Log
-import com.kwabenaberko.rickandmorty.MainActivity
 import com.kwabenaberko.rickandmorty.data.db.DbCharacterDataMapper
 import com.kwabenaberko.rickandmorty.data.db.model.DbCharacter
 import com.kwabenaberko.rickandmorty.data.network.NetworkCharacterDataMapper
@@ -13,7 +11,6 @@ import com.kwabenaberko.rickandmorty.domain.model.Character
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -28,17 +25,20 @@ class CharacterRepositoryImpl @Inject constructor(
         forceUpdate: Boolean
     ): Flow<Result<List<Character>, Exception>> = flow {
 
-        if (forceUpdate) {
-            withContext(Dispatchers.IO){
-                val networkCharacters = networkDataStore.fetchAllCharacters()
-                dbDataStore.insertAllCharacters(networkCharacters.map { networkCharacter ->
-                    networkCharacterDataMapper.mapFromData(networkCharacter)
-                }.map { dbCharacterDataMapper.mapToData(it) })
-            }
-        }
-
         getCharactersFromDB().collect { list ->
+
             emit(Result.Ok(list.map { dbCharacterDataMapper.mapFromData(it) }))
+
+
+            if (list.isEmpty() || forceUpdate){
+                withContext(Dispatchers.IO) {
+                    val networkCharacters = networkDataStore.fetchAllCharacters(pageNumber = 1)
+                    dbDataStore.insertAllCharacters(networkCharacters.map { networkCharacter ->
+                        networkCharacterDataMapper.mapFromData(networkCharacter)
+                    }.map { dbCharacterDataMapper.mapToData(it) })
+                }
+
+            }
         }
 
 

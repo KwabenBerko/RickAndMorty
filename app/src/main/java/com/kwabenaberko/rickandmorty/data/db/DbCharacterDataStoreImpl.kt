@@ -15,4 +15,5 @@ class DbCharacterDataStoreImpl @Inject constructor(
     override suspend fun insertAllCharacters(dbCharacters: List<DbCharacter>) {
         database.characterDao().insertOrUpdateCharacters(*dbCharacters.toTypedArray())
     }
+
 }

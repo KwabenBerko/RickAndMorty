@@ -7,7 +7,7 @@ import javax.inject.Inject
 class NetworkCharacterDataStoreImpl @Inject constructor(
     private val characterApi: CharacterApi
 ): NetworkCharacterDataStore {
-    override suspend fun fetchAllCharacters(): List<NetworkCharacter> {
-        return characterApi.fetchCharacters().results
+    override suspend fun fetchAllCharacters(pageNumber: Int): List<NetworkCharacter> {
+        return characterApi.fetchCharacters(pageNumber).results
     }
 }
