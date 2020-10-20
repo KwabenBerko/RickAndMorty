@@ -20,10 +20,6 @@ class CharactersViewModel @ViewModelInject constructor(
     private val characterRepository: CharacterRepository
 ) : ViewModel() {
 
-    companion object {
-        const val ITEMS_PER_PAGE = 20
-    }
-
     val viewState = MutableLiveData(CharactersViewState())
     private fun currentViewState() = viewState.value!!
 
@@ -42,9 +38,7 @@ class CharactersViewModel @ViewModelInject constructor(
     }
 
     private suspend fun handleFlow(flow: Flow<Result<List<Character>, Exception>>) {
-        flow.onStart {
-            viewState.postValue(currentViewState().copy(isLoading = true))
-        }.catch {
+        flow.catch {
             Timber.e(it)
         }.collect { result ->
             when (result) {
